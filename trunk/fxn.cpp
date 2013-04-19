@@ -1,5 +1,5 @@
 #include <iostream>
-#include </usr/local/include/gsl/gsl_multimin.h>
+#include <gsl/gsl_multimin.h>
 #include <vector>
 #include <point.hpp>
 #include <fxn.hpp>
