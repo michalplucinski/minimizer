@@ -1,0 +1,14 @@
+A program that calculates the minimum energy structure of a classical harmonic lattice.
+Elastic properties can be calculated through deformations of the cell dimensions (no UI yet)
+
+Requirements:
+GSL must be installed
+
+Installation:
+make
+
+Input:
+An xsf file with the structure info
+
+Running the Program:
+./minimization [input file] [equilibrium bond length] [multiplication factor for the input cell]
