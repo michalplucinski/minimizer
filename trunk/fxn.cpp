@@ -1,5 +1,5 @@
 #include <iostream>
-#include <gsl/gsl_multimin.h>
+#include </usr/local/include/gsl/gsl_multimin.h>
 #include <vector>
 #include <point.hpp>
 #include <fxn.hpp>
@@ -119,7 +119,7 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
    T = gsl_multimin_fdfminimizer_vector_bfgs2;
    s = gsl_multimin_fdfminimizer_alloc (T, p.var());
    
-   gsl_multimin_fdfminimizer_set (s, &my_func, x, stepSize, tolerance, expectedVal);
+   gsl_multimin_fdfminimizer_set (s, &my_func, x, stepSize, tolerance);
    
    do
    {
