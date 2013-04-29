@@ -21,8 +21,9 @@ void connectAtoms(vector<Atom>&, int, Parameters&);
 void outputAtoms(vector<Atom>&, string, Parameters&, double);
 
 int mod(int, int); 
+double degRad(double);
 
-double energy (vector<Atom>&, Parameters&, double, double, double);
+double energy (vector<Atom>&, Parameters&, double, double);
 
 int main (int argc, char* argv[])
 {
@@ -41,55 +42,36 @@ int main (int argc, char* argv[])
   
    //defines parameters for optimization 
    double potential;
-   double stepSize = .01;
-   double tolerance = 1e-2;
-   double expectedEnergy = 0;
+   double stepSize = .001;
+   double tolerance = 1e-6;
    Point strainFactor(1,1,1);
 
    //Shifts Atoms off Minimum
 //   double num = atomList[2].getPos('x');
 //   atomList[2].setPos( num+.1, 'x');
-   
-//   potential = energy(atomList, param, stepSize, tolerance, expectedEnergy);
+//   
+//   potential = energy(atomList, param, stepSize, tolerance);
 //   cout << potential << endl;
    
-   for (double i=1; i<1.1; i+=.01)
+   for (double i=.996; i<1.005; i+=.002)
    {
-      strainParam = param;
-      strainFactor.setAll(i);
-      strainParam.strain(strainFactor);
-      potential = energy(atomList, strainParam, stepSize, tolerance, expectedEnergy);
-      cout << strainFactor.x() << ' ' << potential << endl;
+      for (double j=.996; j<1.005; j+=.002)
+      {
+         strainParam = param;
+         strainFactor.x(i);
+         strainFactor.y(j);
+         strainParam.strain(strainFactor);
+         potential = energy(atomList, strainParam, stepSize, tolerance);
+         cout << strainFactor.x() << ' ' << strainFactor.y() << ' ' << potential << endl;
+      }
    }
-   for (double i=1; i>.9; i-=.01)
-   {
-      strainParam = param;
-      strainFactor.setAll(i);
-      strainParam.strain(strainFactor);
-      potential = energy(atomList, strainParam, stepSize, tolerance, expectedEnergy);
-      cout << strainFactor.x() << ' ' << potential << endl;
-   }
-      strainParam = param;
-            strainFactor.setAll(.9);
-      strainParam.strain(strainFactor);
-      potential = energy(atomList, strainParam, stepSize, tolerance, expectedEnergy);
-      cout << strainFactor.x() << ' ' << potential << endl;
-      strainParam = param;
-            strainFactor.setAll(1.3);
-      strainParam.strain(strainFactor);
-      potential = energy(atomList, strainParam, stepSize, tolerance, expectedEnergy);
-      cout << strainFactor.x() << ' ' << potential << endl;
-      strainParam = param;
-            strainFactor.setAll(1.6);
-      strainParam.strain(strainFactor);
-      potential = energy(atomList, strainParam, stepSize, tolerance, expectedEnergy);
-      cout << strainFactor.x() << ' ' << potential << endl;
+   
    outputAtoms(atomList, inputFile, strainParam, potential);
 
    return 0;
 }
 
-double energy (vector<Atom>& atomList, Parameters& param, double stepSize, double tolerance, double expect)
+double energy (vector<Atom>& atomList, Parameters& param, double stepSize, double tolerance)
 {
    double potential;
    int i;
@@ -100,7 +82,7 @@ double energy (vector<Atom>& atomList, Parameters& param, double stepSize, doubl
 
    param.genBondList(atomList);
    
-   potential = optimizer(positions, param, stepSize, tolerance, expect);
+   potential = optimizer(positions, param, stepSize, tolerance);
    for (i=0; i<param.pnt(); i++)
    {
       atomList[i].setPos(positions[i]);
@@ -112,6 +94,11 @@ double energy (vector<Atom>& atomList, Parameters& param, double stepSize, doubl
 int mod(int x, int m) 
 {
    return (x%m + m)%m;
+}
+
+double degRad(double deg)
+{
+   return (deg * pi() / 180);
 }
 
 void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)

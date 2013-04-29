@@ -87,7 +87,7 @@ void my_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df)
    my_df(x, params, df);
 }
 
-double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double tolerance, double expectedVal)
+double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double tolerance)
 {
    size_t iter = 0;
    int status;
@@ -116,7 +116,7 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
       gsl_vector_set (x, i+2, pos[i/3].z() );
    }
    
-   T = gsl_multimin_fdfminimizer_vector_bfgs2;
+   T = gsl_multimin_fdfminimizer_conjugate_fr;
    s = gsl_multimin_fdfminimizer_alloc (T, p.var());
    
    gsl_multimin_fdfminimizer_set (s, &my_func, x, stepSize, tolerance);
@@ -260,5 +260,10 @@ void Parameters::strain(Point & strain)
       mdim[i] = mdim[i]*strain.coord(i);
       mlen.setCoord(mdim[i].distance(), i);
    }
+}
 
+void Parameters::shear(Point & shear)
+{
+   mdim[i] = mdim[i]*strain.coord(i);
+   mlen.setCoord(mdim[i].distance(), i);
 }

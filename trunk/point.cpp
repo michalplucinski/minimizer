@@ -22,11 +22,13 @@ Point::Point(double x, double y, double z)
    mZ = z;
 }
 
+//dot product
 double Point::operator* (const Point & other) const
 {
    return mX * other.mX + mY * other.mY + mZ * other.mZ;
 }
 
+//scalar product
 Point Point::operator* (double num) const
 {
    Point product(mX * num, mY * num, mZ * num);
@@ -37,6 +39,14 @@ Point Point::operator+ (const Point & other) const
 {
    Point sum(mX + other.mX, mY + other.mY, mZ + other.mZ);
    return sum;
+}
+
+Point& Point::operator+= (const Point & other)
+{
+   mX += other.mX;
+   mY += other.mY;
+   mZ += other.mZ;
+   return *this; 
 }
 
 Point Point::operator- (const Point & other) const
@@ -91,5 +101,32 @@ void Point::setCoord(double val, int n)
          mY = val;
       case 2:
          mZ = val;
+      default:   
+         mX = val;
    }
+}
+
+//Cross product
+Point Point::cross (const Point& other) const
+{
+   Point product;
+   product.mX = mY*other.mZ - mZ*other.mY;
+   product.mY = mZ*other.mX - mX*other.mZ;
+   product.mZ = mX*other.mY - mY*other.mX;
+   return product;
+}
+
+Point Point::normalize () const
+{
+   Point unit(mX/distance(), mY/distance(), mZ/distance);
+   return unit;
+}
+
+Point Point::rotate (double theta, const Point & axis) const
+{
+   Point rot( (*this)*cos(theta) );
+   axis = axis.normalize();
+   rot += ( axis.cross(*this) ) * sin(theta);
+   rot += ( axis * ( (axis*(*this)) * (1-cos(theta)) ) );
+   return rot; 
 }

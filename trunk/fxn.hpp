@@ -36,11 +36,12 @@ class Parameters
 
       Parameters& operator= (const Parameters& other) {copy(other); return *this;}
       void strain(Point&);
+      void shear(Point&);
       
       Point getRealDiff (Point&, Point&); //Returns the distance between atoms bonded across cell boundaries
       Point checkPeriodBound (Point&); //Shifts a point back into the cell if the optimization moves it outside
 };
 
-double optimizer (std::vector<Point>&, Parameters&, double, double, double);
+double optimizer (std::vector<Point>&, Parameters&, double, double);
 
 #endif
