@@ -9,13 +9,15 @@ class Point: public Matrix
       Point () {Matrix(3,1);}
       Point (double n) {Matrix(3,1,n);}
       Point (double, double, double);
-      Point (const Point& other) {copy(other);}
+      Point (const Point& other) {Matrix(3,1); copy(other);}
+      Point (const Matrix&);
       double dot (const Point&) const;
       Point cross (const Point&) const;
-//      Point operator* (double n) const {return (*this * n);}
-//      Point operator+ (const Point& other) const {return (*this + other);}
-//      Point operator- (const Point& other) const {return (*this - other);}
-      Point& operator= (const Point& other) { copy(other); return *this; }
+      Point& operator= (const Point& other) { return *static_cast<Point*> (&Matrix::operator=(other)) ; }
+      Point operator* (double n) const {Point product( Matrix::operator* (n)); return product;}
+      Point operator+ (const Point& other) const {Point sum (Matrix::operator+(other)); return sum;}
+      Point operator- (const Point& other) const {Point diff (Matrix::operator-(other)); return diff;}
+      Point& operator+= (const Point& other) { return *static_cast<Point*> (&Matrix::operator+=(other)) ; }
       bool operator== (const Point&) const;
       double x () const {return get(0,0);}
       double y () const {return get(1,0);}
@@ -28,7 +30,7 @@ class Point: public Matrix
       double quadrance () const;
       double distance () const;
       double scalarProj (const Point&) const;
-//      Point rotate (double, const Point&) const;
+      Point rotate (double, const Point&) const;
       Point normalize () const;
 };
 

@@ -120,6 +120,7 @@ void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
    for (i=0;i<3;i++)
    {
       file >> x >> y >> z;
+ debug(x)  
       tmp.x(x);
       tmp.y(y);
       tmp.z(z);
@@ -151,8 +152,6 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
    np = op;
    np.pnt( op.pnt() * (n.x() * n.y() * n.z()) );
    
-debug(op.dim(2).x())
-debug(n.coord(2))
    for (i=0;i<3;i++)
       np.dim(op.dim(i)*n.coord(i), i);
 

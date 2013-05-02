@@ -10,21 +10,23 @@ class Matrix
       void copy (const Matrix&);
    public:
       Matrix ();
-      Matrix (const Matrix& other) { copy(other); }
+      Matrix (const Matrix& other) { mElements = new double [width*height]; copy(other); }
       Matrix (int, int);
       Matrix (int, int, double);
       Matrix (const double [], int, int);
       Matrix (double*, int, int);
       ~Matrix ();
       double get (int, int) const;
+      int columns() const {return width;}
+      int rows() const {return height;}
       void set (int, int, double);
       void setAll (double);
-      virtual Matrix operator* (const Matrix&) const;
-      virtual Matrix operator* (double) const;
-      virtual Matrix operator+ (const Matrix&) const;
-      virtual Matrix operator- (const Matrix&) const;
-      virtual Matrix& operator= (const Matrix& other) { copy(other); return *this; }
-      virtual Matrix& operator+= (const Matrix& other) { *this = other + *this; return *this; }
+      Matrix operator* (const Matrix&) const;
+      Matrix operator* (double) const;
+      Matrix operator+ (const Matrix&) const;
+      Matrix operator- (const Matrix&) const;
+      Matrix& operator= (const Matrix& other) { copy(other); return *this; }
+      Matrix& operator+= (const Matrix& other) { *this = other + *this; return *this; }
 };
 
 #endif

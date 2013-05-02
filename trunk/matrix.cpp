@@ -82,13 +82,14 @@ double Matrix::get (int i, int j) const
    return mElements[i*width + j];
 }
 
+#include <iostream>
 void Matrix::set (int i, int j, double n)
 {
    if (i >= height || j >= width)
    {
       throw BadIndex();
    }
-
+   std::cout << 'h' << std::endl;
    mElements[i*width + j] = n;
 }
 

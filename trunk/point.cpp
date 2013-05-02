@@ -1,5 +1,6 @@
 #include <point.hpp>
 #include <cmath>
+#include <minexcept.hpp>
 
 Point::Point (double x, double y, double z) 
 {
@@ -8,6 +9,16 @@ Point::Point (double x, double y, double z)
    xyz[1] = y;
    xyz[2] = z;
    Matrix(xyz, 3,1); 
+}
+
+Point::Point (const Matrix& other)
+{
+   if (other.columns() != 1 || other.rows() != 3)
+   {
+      throw BadOperator();
+   }
+   Matrix (3,1);
+   copy(other);
 }
 
 //dot product
