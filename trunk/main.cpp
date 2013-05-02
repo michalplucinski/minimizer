@@ -22,6 +22,7 @@ void outputAtoms(vector<Atom>&, string, Parameters&, double);
 
 int mod(int, int); 
 double degRad(double);
+double pi();
 
 double energy (vector<Atom>&, Parameters&, double, double);
 
@@ -33,8 +34,8 @@ int main (int argc, char* argv[])
    
    int exBond = atoi(argv[2]);
    int cellFactor = atoi(argv[3]);
-   Point cellMultiply(cellFactor, cellFactor, cellFactor);
-
+   Point cellMultiply(cellFactor);
+   
    readAtoms(atomList, inputFile, unitCellParam);
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
    connectAtoms(atomList, exBond, param);
@@ -101,6 +102,11 @@ double degRad(double deg)
    return (deg * pi() / 180);
 }
 
+double pi()
+{
+   return 3.14159265359;
+}
+
 void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
 {
    string buffer;
@@ -145,6 +151,8 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
    np = op;
    np.pnt( op.pnt() * (n.x() * n.y() * n.z()) );
    
+debug(op.dim(2).x())
+debug(n.coord(2))
    for (i=0;i<3;i++)
       np.dim(op.dim(i)*n.coord(i), i);
 

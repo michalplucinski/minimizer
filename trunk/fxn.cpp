@@ -262,8 +262,8 @@ void Parameters::strain(Point & strain)
    }
 }
 
-void Parameters::shear(Point & shear)
+/*void Parameters::shear(Point & shear)
 {
    mdim[i] = mdim[i]*strain.coord(i);
    mlen.setCoord(mdim[i].distance(), i);
-}
+}*/
