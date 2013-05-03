@@ -2,10 +2,13 @@
 #include <exception>
 #include <minexcept.hpp>
 
+#include <iostream>
 void Matrix::copy (const Matrix& other)
 {
    width = other.width;
    height = other.height;
+   delete[] mElements;
+   mElements = new double [width*height];
    for (int i=0; i<height; i++)
    {
       for (int j=0; j<width; j++)
@@ -76,20 +79,20 @@ double Matrix::get (int i, int j) const
 {
    if (i >= height || j >= width)
    {
+      std::cout << i << ' ' << j << std::endl;
       throw BadIndex();
    }
 
    return mElements[i*width + j];
 }
 
-#include <iostream>
 void Matrix::set (int i, int j, double n)
 {
    if (i >= height || j >= width)
    {
+      std::cout << i <<  ' ' << height << ' ' << j << ' ' << width << ' ' << n << std::endl;
       throw BadIndex();
    }
-   std::cout << 'h' << std::endl;
    mElements[i*width + j] = n;
 }
 
@@ -111,7 +114,7 @@ Matrix Matrix::operator+ (const Matrix& other) const
       throw BadOperator();
    }
 
-   Matrix sum(width, height);
+   Matrix sum(height, width);
 
    for (int i=0; i<height; i++)
    {
@@ -130,7 +133,7 @@ Matrix Matrix::operator- (const Matrix& other) const
       throw BadOperator();
    }
 
-   Matrix diff(width, height);
+   Matrix diff(height, width);
 
    for (int i=0; i<height; i++)
    {
@@ -144,8 +147,8 @@ Matrix Matrix::operator- (const Matrix& other) const
 
 Matrix Matrix::operator* (double n) const
 {
-   Matrix product(width, height);
-
+   Matrix product(height, width);
+   
    for (int i=0; i<height; i++)
    {
       for (int j=0; j<width; j++)

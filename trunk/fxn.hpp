@@ -1,9 +1,10 @@
+#ifndef FXN_H
+#define FXN_H
+
+#include <matrix.hpp>
 #include <vector>
 #include <point.hpp>
 #include <atom.hpp>
-
-#ifndef FXN_H
-#define FXN_H
 
 //All info needed about the function
 class Parameters

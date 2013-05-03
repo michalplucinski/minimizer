@@ -2,22 +2,21 @@
 #include <cmath>
 #include <minexcept.hpp>
 
-Point::Point (double x, double y, double z) 
+#include <iostream>
+Point::Point (double x, double y, double z) : Matrix(3,1)
 {
-   double xyz[3];
-   xyz[0] = x;
-   xyz[1] = y;
-   xyz[2] = z;
-   Matrix(xyz, 3,1); 
+   set(0,0,x);
+   set(1,0,y);
+   set(2,0,z);
 }
 
-Point::Point (const Matrix& other)
+Point::Point (const Matrix& other) : Matrix(3,1)
 {
    if (other.columns() != 1 || other.rows() != 3)
    {
+      std::cout << other.columns() << ' ' << other.rows() << std::endl;
       throw BadOperator();
    }
-   Matrix (3,1);
    copy(other);
 }
 

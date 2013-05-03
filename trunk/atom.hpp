@@ -1,7 +1,7 @@
-#include <point.hpp>
-
 #ifndef ATOM_H
 #define ATOM_H
+
+#include <point.hpp>
 
 class Atom
 {

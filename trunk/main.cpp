@@ -37,6 +37,7 @@ int main (int argc, char* argv[])
    Point cellMultiply(cellFactor);
    
    readAtoms(atomList, inputFile, unitCellParam);
+//   param = unitCellParam;
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
    connectAtoms(atomList, exBond, param);
   // param.dist = 0;
@@ -120,7 +121,6 @@ void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
    for (i=0;i<3;i++)
    {
       file >> x >> y >> z;
- debug(x)  
       tmp.x(x);
       tmp.y(y);
       tmp.z(z);
