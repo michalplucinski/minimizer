@@ -123,13 +123,6 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
    
    do
    {
-/*      cout << iter << "  ";
-      for (i=0;i<p.var();i+=3)
-         cout << gsl_vector_get (s->x, i) << " " << gsl_vector_get (s->x, i+1) << " " 
-         << gsl_vector_get (s->x, i+2) << "   ";
-
-      cout << s->f << "\n";
-  */    
       iter++;
       status = gsl_multimin_fdfminimizer_iterate (s);
       
@@ -201,6 +194,7 @@ Point Parameters::checkPeriodBound (Point & c)
    double xDel = c.scalarProj(dim(0));
    double yDel = c.scalarProj(dim(1));
    double zDel = c.scalarProj(dim(2));
+
    if (xDel < 0 || xDel >= mlen.x())
    {
       sign = xDel < 0 ? 1 : -1;
@@ -251,7 +245,7 @@ void Parameters::copy(const Parameters & other)
    mlen = other.mlen;
 }
 
-void Parameters::strain(Point & strain)
+void Parameters::strain(const Point & strain)
 {
    Matrix3 strainTensor;
    strainTensor.setDiag(strain);
@@ -259,12 +253,25 @@ void Parameters::strain(Point & strain)
    for (int i=0;i<3;i++)
       mlen.setCoord(dim(i).distance(), i);
 }
-/*
-void Parameters::shear(Point & shear)
+
+void Parameters::strain(const Point & strain, const Point& shear)
 {
-   mdim[i] = mdim[i]*strain.coord(i);
-   mlen.setCoord(mdim[i].distance(), i);
-}*/
+   Matrix3 strainTensor;
+   strainTensor.setDiag(strain);
+   strainTensor.setSym(2,3,shear.x());
+   strainTensor.setSym(1,3,shear.y());
+   strainTensor.setSym(1,2,shear.z());
+   mdim *= strainTensor; 
+   for (int i=0;i<3;i++)
+      mlen.setCoord(dim(i).distance(), i);
+}
+
+void Parameters::strain(const Matrix3& strainTensor)
+{
+   mdim *= strainTensor;
+   for (int i=0;i<3;i++)
+      mlen.setCoord(dim(i).distance(), i);
+}
 
 void Parameters::setDim (const Matrix3& other) 
 {

@@ -21,6 +21,8 @@ class Matrix
       int rows() const {return height;}
       void set (int, int, double);
       void setAll (double);
+      void setDiag (int i, double n) {set(i,i,n);}
+      void setSym (int i, int j, double n) {set(i,j,n); set(j,i,n);}
       Matrix operator* (const Matrix&) const;
       Matrix operator* (double) const;
       Matrix operator+ (const Matrix&) const;

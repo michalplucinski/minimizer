@@ -14,7 +14,7 @@ class Matrix3: public Matrix
       Matrix3 (const Point&, const Point&, const Point&);
       Matrix3 (const Matrix&);
       Matrix3 operator* (double n) const {Matrix3 product( Matrix::operator* (n)); return product;}
-      Matrix3 operator* (const Matrix& other) const {Matrix3 product( Matrix::operator* (other)); return product;}
+      Matrix3 operator* (const Matrix3& other) const {Matrix3 product( Matrix::operator* (other)); return product;}
       Point operator* (const Point& other) const {Point product( Matrix::operator* (other)); return product;}
       Matrix3 operator+ (const Matrix3& other) const {Matrix3 sum (Matrix::operator+(other)); return sum;}
       Matrix3 operator- (const Matrix3& other) const {Matrix3 diff (Matrix::operator-(other)); return diff;}

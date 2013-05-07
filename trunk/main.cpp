@@ -152,11 +152,6 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
    np = op;
    np.pnt( op.pnt() * (n.x() * n.y() * n.z()) );
    np.setDim( op.dim()*factor );
-  /* for (i=0;i<3;i++)
-   {
-      Point test = op.dim(i)*n.coord(i);
-      np.dim(op.dim(i)*n.coord(i), i);
-   }*/
 
    for (i=0;i<n.x();i++)
    {
@@ -211,7 +206,6 @@ void connectAtoms(vector<Atom> & atoms, int target, Parameters & p)
          b = atoms[j].getPos();
          cellDist = abs( (p.getRealDiff(a,b)).distance());
 
-//         cout << cellDist << ' ' << p.dist() << endl;
          if ( abs(cellDist - p.dist()) < epsilon)
          {
             atoms[i].setNeighbour(&atoms[j]);
@@ -241,8 +235,6 @@ void outputAtoms(vector<Atom> & atoms, string fileName, Parameters & p, double p
       file << "6 " << atoms[i].getPos('x') << " " << atoms[i].getPos('y') << " " << atoms[i].getPos('z') 
       << ' ' << atoms[i].getNeighbourIndex(0) << ' ' <<atoms[i].getNeighbourIndex(1) << ' '
       << atoms[i].getNeighbourIndex(2) << ' ' <<atoms[i].getNeighbourIndex(3) << '\n';
-      
-//      cout << atoms[i].getPos('x') << " " << atoms[i].getPos('y') << ' ' << atoms[i].getPos('z') << "   ";
    }
 
    cout  << potential << "\n";

@@ -33,5 +33,5 @@ void Matrix3::setPoint (const Point& other, int n)
 void Matrix3::setDiag (const Point& other)
 {
    for (int i=0; i<3; i++)
-      set( i,i, other.coord(i) );
+      Matrix::setDiag( i, other.coord(i) );
 }

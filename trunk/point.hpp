@@ -30,7 +30,7 @@ class Point: public Matrix
       double quadrance () const;
       double distance () const;
       double scalarProj (const Point&) const;
-      Point rotate (double, const Point&) const;
+//      Point rotate (double, const Point&) const;
       Point normalize () const;
 };
 

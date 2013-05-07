@@ -193,3 +193,4 @@ Matrix Matrix::getCol(int n) const
    
    return column;
 }
+

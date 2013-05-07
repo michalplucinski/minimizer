@@ -39,8 +39,9 @@ class Parameters
       void genBondList (std::vector<Atom> & atoms);
 
       Parameters& operator= (const Parameters& other) {copy(other); return *this;}
-      void strain (Point&);
-      void shear (Point&);
+      void strain (const Point&);
+      void strain (const Point&, const Point&);
+      void strain (const Matrix3&);
       
       Point getRealDiff (Point&, Point&); //Returns the distance between atoms bonded across cell boundaries
       Point checkPeriodBound (Point&); //Shifts a point back into the cell if the optimization moves it outside
