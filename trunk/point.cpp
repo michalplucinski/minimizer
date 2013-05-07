@@ -1,8 +1,8 @@
 #include <point.hpp>
 #include <cmath>
 #include <minexcept.hpp>
-
 #include <iostream>
+
 Point::Point (double x, double y, double z) : Matrix(3,1)
 {
    set(0,0,x);

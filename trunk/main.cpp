@@ -40,8 +40,6 @@ int main (int argc, char* argv[])
 //   param = unitCellParam;
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
    connectAtoms(atomList, exBond, param);
-  // param.dist = 0;
-  
    //defines parameters for optimization 
    double potential;
    double stepSize = .001;
@@ -49,12 +47,12 @@ int main (int argc, char* argv[])
    Point strainFactor(1,1,1);
 
    //Shifts Atoms off Minimum
-//   double num = atomList[2].getPos('x');
-//   atomList[2].setPos( num+.1, 'x');
-//   
-//   potential = energy(atomList, param, stepSize, tolerance);
-//   cout << potential << endl;
+/*   double num = atomList[2].getPos('x');
+   atomList[2].setPos( num+.1, 'x');
    
+   potential = energy(atomList, param, stepSize, tolerance);
+   cout << potential << endl;
+*/   
    for (double i=.996; i<1.005; i+=.002)
    {
       for (double j=.996; j<1.005; j+=.002)
@@ -124,7 +122,7 @@ void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
       tmp.x(x);
       tmp.y(y);
       tmp.z(z);
-      p.dim(tmp, i);
+      p.setDim(tmp, i);
    }
    
    file >> buffer >> n >> buffer;
@@ -148,12 +146,17 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
    int i,j,k,m;
    unsigned int index;
    Atom newAtom;
-   
+   Matrix3 factor;
+   factor.setDiag(n);
+
    np = op;
    np.pnt( op.pnt() * (n.x() * n.y() * n.z()) );
-   
-   for (i=0;i<3;i++)
+   np.setDim( op.dim()*factor );
+  /* for (i=0;i<3;i++)
+   {
+      Point test = op.dim(i)*n.coord(i);
       np.dim(op.dim(i)*n.coord(i), i);
+   }*/
 
    for (i=0;i<n.x();i++)
    {
@@ -166,9 +169,9 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
                Point pos;
                pos = atoms[m].getPos();
                index = m + k*op.pnt() + j*n.z()*op.pnt() + i*n.y()*n.z()*op.pnt();
-               pos = (op.dim(0)*i) + pos;
-               pos = (op.dim(1)*j) + pos;
-               pos = (op.dim(2)*k) + pos;
+               pos += (op.dim(0)*i);
+               pos += (op.dim(1)*j);
+               pos += (op.dim(2)*k);
                if (index < atoms.size())
                {
                   atoms[index].setPos( pos );
@@ -207,6 +210,8 @@ void connectAtoms(vector<Atom> & atoms, int target, Parameters & p)
          a = atoms[i].getPos();
          b = atoms[j].getPos();
          cellDist = abs( (p.getRealDiff(a,b)).distance());
+
+//         cout << cellDist << ' ' << p.dist() << endl;
          if ( abs(cellDist - p.dist()) < epsilon)
          {
             atoms[i].setNeighbour(&atoms[j]);

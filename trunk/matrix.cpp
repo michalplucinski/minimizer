@@ -1,8 +1,8 @@
 #include <matrix.hpp>
 #include <exception>
 #include <minexcept.hpp>
-
 #include <iostream>
+
 void Matrix::copy (const Matrix& other)
 {
    width = other.width;
@@ -20,8 +20,8 @@ void Matrix::copy (const Matrix& other)
 
 Matrix::Matrix ()
 {
-   width = 3;
-   height = 3;
+   width = 0;
+   height = 0;
    mElements = new double [width*height];
    setAll(0);
 }
@@ -182,4 +182,14 @@ Matrix Matrix::operator* (const Matrix& other) const
       }
    }
    return product;
+}
+
+Matrix Matrix::getCol(int n) const
+{
+   Matrix column(height, 1);
+   
+   for (int i=0; i<height; i++)
+      column.set( i,0, get(i,n) );
+   
+   return column;
 }

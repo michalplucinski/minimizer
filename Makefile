@@ -5,7 +5,7 @@ LDFLAGS=-lgsl -lgslcblas
 
 all: minimization
 
-minimization: matrix.o point.o fxn.o atom.o main.cpp
+minimization: matrix.o point.o matrix3.o fxn.o atom.o main.cpp
 		$(CC) $(CFLAGS) $(LDFLAGS) $^ -o $@
 
 fxn.o: fxn.cpp
@@ -20,6 +20,8 @@ matrix.o: matrix.cpp
 point.o: point.cpp
 		$(CC) $(CFLAGS) -c $< -o $@
 
+matrix3.o: matrix3.cpp
+		$(CC) $(CFLAGS) -c $< -o $@
 
 fxn.cpp: fxn.hpp point.hpp matrix.hpp
 atom.cpp: atom.hpp point.hpp

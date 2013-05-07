@@ -172,47 +172,49 @@ Point Parameters::getRealDiff (Point & a, Point & b)
    Point c;
    c = (a-b);
    double sign;
-   double xDel = c.scalarProj(mdim[0]);
-   double yDel = c.scalarProj(mdim[1]);
-   double zDel = c.scalarProj(mdim[2]);
+   double xDel = c.scalarProj(dim(0));
+   double yDel = c.scalarProj(dim(1));
+   double zDel = c.scalarProj(dim(2));
+
    if (xDel < -mlen.x()/2 || xDel > mlen.x()/2)
    {
       sign = xDel < 0 ? 1 : -1;
-      c = (c+(mdim[0]*sign));
+      c += dim(0)*sign;
    }
    if (yDel < -mlen.y()/2 || yDel > mlen.y()/2)
    {
       sign = yDel < 0 ? 1 : -1;
-      c = (c+(mdim[1]*sign));
+      c += dim(1)*sign;
    }
    if (zDel < -mlen.z()/2 || zDel > mlen.z()/2)
    {
       sign = zDel < 0 ? 1 : -1;
-      c = (c+(mdim[2]*sign));
+      c += dim(2)*sign;
    }
+
    return c;
 }
 
 Point Parameters::checkPeriodBound (Point & c)
 {
    double sign;
-   double xDel = c.scalarProj(mdim[0]);
-   double yDel = c.scalarProj(mdim[1]);
-   double zDel = c.scalarProj(mdim[2]);
+   double xDel = c.scalarProj(dim(0));
+   double yDel = c.scalarProj(dim(1));
+   double zDel = c.scalarProj(dim(2));
    if (xDel < 0 || xDel >= mlen.x())
    {
       sign = xDel < 0 ? 1 : -1;
-      c = (c+(mdim[0]*sign));
+      c = (c+(dim(0)*sign));
    }
    if (yDel < 0 || yDel >= mlen.y())
    {
       sign = yDel < 0 ? 1 : -1;
-      c = (c+(mdim[1]*sign));
+      c = (c+(dim(1)*sign));
    }
    if (zDel < 0 || zDel >= mlen.z())
    {
       sign = zDel < 0 ? 1 : -1;
-      c = (c+(mdim[2]*sign));
+      c = (c+(dim(2)*sign));
    }
    return c;
 }
@@ -237,9 +239,6 @@ Parameters::Parameters()
    mdist = 1;
    mcxn = 0;
    mpairs = vector<int>();
-   dim(Point(),0);
-   dim(Point(),1);
-   dim(Point(),2);
 }
 
 void Parameters::copy(const Parameters & other)
@@ -248,22 +247,28 @@ void Parameters::copy(const Parameters & other)
    mcxn = other.mcxn;
    mdist = other.mdist;
    mpairs = other.mpairs;
-   dim(other.mdim[0], 0);
-   dim(other.mdim[1], 1);
-   dim(other.mdim[2], 2);
+   mdim = other.mdim;
+   mlen = other.mlen;
 }
 
 void Parameters::strain(Point & strain)
 {
+   Matrix3 strainTensor;
+   strainTensor.setDiag(strain);
+   mdim *= strainTensor; 
    for (int i=0;i<3;i++)
-   {
-      mdim[i] = mdim[i]*strain.coord(i);
-      mlen.setCoord(mdim[i].distance(), i);
-   }
+      mlen.setCoord(dim(i).distance(), i);
 }
-
-/*void Parameters::shear(Point & shear)
+/*
+void Parameters::shear(Point & shear)
 {
    mdim[i] = mdim[i]*strain.coord(i);
    mlen.setCoord(mdim[i].distance(), i);
 }*/
+
+void Parameters::setDim (const Matrix3& other) 
+{
+   mdim = other;
+   for (int i=0; i<3; i++)
+      mlen.setCoord( other.getPoint(i).distance(), i );
+}

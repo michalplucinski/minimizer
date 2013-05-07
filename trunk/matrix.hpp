@@ -27,6 +27,8 @@ class Matrix
       Matrix operator- (const Matrix&) const;
       Matrix& operator= (const Matrix& other) { copy(other); return *this; }
       Matrix& operator+= (const Matrix& other) { *this = other + *this; return *this; }
+      Matrix& operator*= (const Matrix& other) { *this = other * *this; return *this; }
+      Matrix getCol(int) const;
 };
 
 #endif

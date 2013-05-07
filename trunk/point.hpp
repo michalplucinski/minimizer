@@ -3,7 +3,6 @@
 
 #include <matrix.hpp>
 
-#include <iostream>
 class Point: public Matrix
 {
    public:
