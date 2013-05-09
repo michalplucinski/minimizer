@@ -1,6 +1,7 @@
 #include <matrix3.hpp>
 #include <iostream>
 #include <minexcept.hpp>
+#include <cmath>
 
 Matrix3::Matrix3 (const Point& c1, const Point& c2, const Point& c3) : Matrix(3,3)
 {
@@ -34,4 +35,9 @@ void Matrix3::setDiag (const Point& other)
 {
    for (int i=0; i<3; i++)
       Matrix::setDiag( i, other.coord(i) );
+}
+
+double Matrix3::tripleProduct() const
+{
+   return getPoint(0).dot( getPoint(1).cross(getPoint(2)) );
 }

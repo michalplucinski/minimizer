@@ -29,7 +29,7 @@ double my_f (const gsl_vector *v, void *params)
       if (a == b)
          continue;
       
-      fxn += pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2);
+      fxn += .5*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2);
    }
    return fxn;
 }
@@ -233,6 +233,7 @@ Parameters::Parameters()
    mdist = 1;
    mcxn = 0;
    mpairs = vector<int>();
+   mk = 1;
 }
 
 void Parameters::copy(const Parameters & other)
@@ -243,6 +244,7 @@ void Parameters::copy(const Parameters & other)
    mpairs = other.mpairs;
    mdim = other.mdim;
    mlen = other.mlen;
+   mk = other.mk;
 }
 
 void Parameters::strain(const Point & strain)
@@ -258,9 +260,9 @@ void Parameters::strain(const Point & strain, const Point& shear)
 {
    Matrix3 strainTensor;
    strainTensor.setDiag(strain);
-   strainTensor.setSym(2,3,shear.x());
-   strainTensor.setSym(1,3,shear.y());
-   strainTensor.setSym(1,2,shear.z());
+   strainTensor.setSym(1,2,shear.x());
+   strainTensor.setSym(0,2,shear.y());
+   strainTensor.setSym(0,1,shear.z());
    mdim *= strainTensor; 
    for (int i=0;i<3;i++)
       mlen.setCoord(dim(i).distance(), i);

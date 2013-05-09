@@ -6,6 +6,7 @@
 #include <vector>
 #include <point.hpp>
 #include <atom.hpp>
+#include <cmath>
 
 //All info needed about the function
 class Parameters
@@ -18,6 +19,7 @@ class Parameters
       Point mlen; //The length of each cell vector
       double mdist; //Optimal bond distance
       std::vector<int> mpairs; //List of bonds
+      double mk; //Elastic constant, k
       void copy (const Parameters&);
    public:
       Parameters ();
@@ -29,8 +31,11 @@ class Parameters
       Point len () const {return mlen;}
       const std::vector<int>& pairs () {return mpairs;}
       Point dim (int n) const {return mdim.getPoint(n);}
-      Matrix3 dim () const {return mdim;}
+      const Matrix3& dim () const {return mdim;}
+      double volume() const {return fabs( mdim.tripleProduct() );}
+      double k () const {return mk;}
       
+      void k (double n) {mk = n;}
       void pnt (int n) {mpnt = n; mvar = n*3;}
       void cxn (int n) {mcxn = n;}
       void dist (double n) {mdist = n;}

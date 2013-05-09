@@ -40,11 +40,16 @@ int main (int argc, char* argv[])
 //   param = unitCellParam;
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
    connectAtoms(atomList, exBond, param);
-   //defines parameters for optimization 
+   //defines parameters for optimization
+   double k;
+   k = 5.229e-4; 
+   param.k(k);
+   unitCellParam.k(k);
    double potential;
    double stepSize = .001;
    double tolerance = 1e-6;
    Point strainFactor(1,1,1);
+   Point shearFactor(0,0,0);
 
    //Shifts Atoms off Minimum
 /*   double num = atomList[2].getPos('x');
@@ -53,17 +58,13 @@ int main (int argc, char* argv[])
    potential = energy(atomList, param, stepSize, tolerance);
    cout << potential << endl;
 */   
-   for (double i=.996; i<1.005; i+=.002)
+   for (double i=.96; i<1.05; i+=.02)
    {
-      for (double j=.996; j<1.005; j+=.002)
-      {
-         strainParam = param;
-         strainFactor.x(i);
-         strainFactor.y(j);
-         strainParam.strain(strainFactor);
-         potential = energy(atomList, strainParam, stepSize, tolerance);
-         cout << strainFactor.x() << ' ' << strainFactor.y() << ' ' << potential << endl;
-      }
+      strainParam = param;
+      strainFactor.setAll(i);
+      strainParam.strain(strainFactor, shearFactor);
+      potential = energy(atomList, strainParam, stepSize, tolerance);
+      cout << strainParam.volume() << ' ' << potential << endl;
    }
    
    outputAtoms(atomList, inputFile, strainParam, potential);
@@ -194,7 +195,7 @@ void connectAtoms(vector<Atom> & atoms, int target, Parameters & p)
    double cellDist;
    double epsilon = 1e-8;
 
-   p.dist( abs( (atoms[0].getPos() - atoms[target].getPos()).distance() ) );
+   p.dist( fabs( (atoms[0].getPos() - atoms[target].getPos()).distance() ) );
    
    for (int i=0; i<size; i++)
    {
@@ -204,9 +205,9 @@ void connectAtoms(vector<Atom> & atoms, int target, Parameters & p)
             continue;
          a = atoms[i].getPos();
          b = atoms[j].getPos();
-         cellDist = abs( (p.getRealDiff(a,b)).distance());
+         cellDist = fabs( (p.getRealDiff(a,b)).distance());
 
-         if ( abs(cellDist - p.dist()) < epsilon)
+         if ( fabs(cellDist - p.dist()) < epsilon)
          {
             atoms[i].setNeighbour(&atoms[j]);
             nBond++;

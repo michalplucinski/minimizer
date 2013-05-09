@@ -16,13 +16,17 @@ class Matrix
       Matrix (const double [], int, int);
       Matrix (double*, int, int);
       ~Matrix ();
+      
       double get (int, int) const;
       int columns() const {return width;}
       int rows() const {return height;}
+      Matrix getCol(int) const;
+      
       void set (int, int, double);
       void setAll (double);
       void setDiag (int i, double n) {set(i,i,n);}
       void setSym (int i, int j, double n) {set(i,j,n); set(j,i,n);}
+      
       Matrix operator* (const Matrix&) const;
       Matrix operator* (double) const;
       Matrix operator+ (const Matrix&) const;
@@ -30,7 +34,6 @@ class Matrix
       Matrix& operator= (const Matrix& other) { copy(other); return *this; }
       Matrix& operator+= (const Matrix& other) { *this = other + *this; return *this; }
       Matrix& operator*= (const Matrix& other) { *this = other * *this; return *this; }
-      Matrix getCol(int) const;
 };
 
 #endif

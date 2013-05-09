@@ -2,31 +2,41 @@
 #define ATOM_H
 
 #include <point.hpp>
+#include <matrix3.hpp>
 
 class Atom
 {
    private:
       int atomIndex;
-      Point pos;
+      Point pos; //position relative to posBasis
       static const int sNeighbourCount=4;
       Atom *neighbours[sNeighbourCount];
       int neighbourCount;
+      void copy(const Atom&);
+      Matrix3 posBasis; //vectors defining cell Atom is found in
    public:
       Atom();
-      Atom(Point&, int);
+      Atom(const Matrix3&);
+      Atom(const Point&, int);
+      Atom(const Point&, int, const Matrix3&);
       Atom(const Atom&);
-      void setPos(double, char);
-      void setPos(Point&);
-      double getPos(char);
-      const Point& getPos();
+
+//      void setPos(double, char);
+      void setPos(const Point&);
       void setNeighbour(Atom*);
-      Atom* getNeighbour(int);
       void delNeighbour(int);
       void clearNeighbours();
-      void setIndex(int);
-      int getIndex();
-      int getNeighbourIndex(int);
       void delRandNeighbour();
+      void setIndex(int);
+
+      double getPos(char) const;
+      double getPos(int i) const {return pos.coord(i);}
+      Point getPos() const;
+      const Point& getRelPos() const {return pos;}
+      Atom* getNeighbour(int) const;
+      int getIndex() const;
+      int getNeighbourIndex(int) const;
+      Atom& operator=(const Atom& other) {copy(other); return *this;}
 };
 
 #endif

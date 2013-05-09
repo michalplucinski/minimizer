@@ -2,9 +2,12 @@
 #include <point.hpp>
 #include <cstdlib>
 #include <ctime>
+#include <matrix3.hpp>
+#include <minexcept.hpp>
 
 Atom::Atom ()
 {
+   posBasis.setDiag(Point(1,1,1));
    for (int i=0; i<sNeighbourCount; i++)
    {
       neighbours[i] = this;
@@ -12,8 +15,19 @@ Atom::Atom ()
    neighbourCount = 0;
 }
 
-Atom::Atom (Point & target, int index)
+Atom::Atom (const Matrix3& basis)
 {
+   posBasis = basis;
+   for (int i=0; i<sNeighbourCount; i++)
+   {
+      neighbours[i] = this;
+   }
+   neighbourCount = 0;
+}
+
+Atom::Atom (const Point & target, int index)
+{
+   posBasis.setDiag(Point(1,1,1));
    setPos(target);
    atomIndex = index;
    for (int i=0; i<sNeighbourCount; i++)
@@ -23,8 +37,21 @@ Atom::Atom (Point & target, int index)
    neighbourCount = 0;
 }
 
-Atom::Atom (const Atom & target)
+Atom::Atom(const Point& target, int index, const Matrix3& basis)
 {
+   posBasis = basis;
+   setPos(target);
+   atomIndex = index;
+   for (int i=0; i<sNeighbourCount; i++)
+   {
+      neighbours[i] = this;
+   }
+   neighbourCount = 0;
+}
+      
+void Atom::copy (const Atom& target)
+{
+   posBasis = target.posBasis;
    for (int i=0; i<sNeighbourCount; i++)
    {
       if (target.neighbours[i] == &target) 
@@ -41,6 +68,11 @@ Atom::Atom (const Atom & target)
    neighbourCount = target.neighbourCount;
 }
 
+Atom::Atom (const Atom & target)
+{
+   copy (target);
+}
+
 void Atom::clearNeighbours()
 {
    for (int i=0; i<sNeighbourCount; i++)
@@ -50,7 +82,7 @@ void Atom::clearNeighbours()
    neighbourCount = 0;
 }
 
-void Atom::setPos(double val, char dimen)
+/*void Atom::setPos(double val, char dimen)
 {
    switch (dimen)
    {
@@ -64,11 +96,11 @@ void Atom::setPos(double val, char dimen)
          pos.z(val);
          break;
    }     
-}
+}*/
 
-void Atom::setPos(Point & coord)
+void Atom::setPos(const Point & coord)
 {
-   pos = coord;
+   pos = coord.changeBasis(posBasis);
 }
 
 void Atom::setNeighbour(Atom * pTarget)
@@ -89,7 +121,7 @@ void Atom::setNeighbour(Atom * pTarget)
    }
 }
 
-Atom * Atom::getNeighbour(int num)
+Atom * Atom::getNeighbour(int num) const
 {
    return neighbours[num];
 }
@@ -117,24 +149,25 @@ void Atom::delRandNeighbour()
    delNeighbour(rand() % neighbourCount);
 }
 
-double Atom::getPos(char dimen)
+double Atom::getPos(char dimen) const
 {
+   Point posXYZ = pos.xyzBasis(posBasis);
    switch (dimen)
    {
       case 'x':
-         return pos.x();
+         return posXYZ.x();
       case 'y':
-         return pos.y();
+         return posXYZ.y();
       case 'z':
-         return pos.z();
+         return posXYZ.z();
       default:
-         return pos.x();
+         throw BadIndex();
    }
 }
 
-const Point& Atom::getPos()
+Point Atom::getPos() const
 {
-   return pos;
+   return pos.xyzBasis(posBasis);
 }
 
 void Atom::setIndex(int num)
@@ -142,12 +175,12 @@ void Atom::setIndex(int num)
    atomIndex = num;
 }
 
-int Atom::getIndex()
+int Atom::getIndex() const
 {
    return atomIndex;
 }
 
-int Atom::getNeighbourIndex(int num)
+int Atom::getNeighbourIndex(int num) const
 {
    return neighbours[num]->atomIndex;
 }

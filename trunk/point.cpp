@@ -2,6 +2,7 @@
 #include <cmath>
 #include <minexcept.hpp>
 #include <iostream>
+#include <matrix3.hpp>
 
 Point::Point (double x, double y, double z) : Matrix(3,1)
 {
@@ -66,11 +67,31 @@ Point Point::normalize () const
    return unit;
 }
 
-/*Point Point::rotate (double theta, const Point & axis) const
+Point Point::rotate (double theta, const Point & axis) const
 {
    Point rot( (*this)*cos(theta) );
-   axis = axis.normalize();
+   Point normalAxis(axis.normalize());
    rot += ( axis.cross(*this) ) * sin(theta);
    rot += ( axis * ( (axis.dot(*this)) * (1-cos(theta)) ) );
    return rot; 
-}*/
+}
+
+Point Point::changeBasis (const Matrix3& basis) const
+{
+   Point basisPt;
+
+   for (int i=0; i<3; i++)
+      basisPt.setCoord( scalarProj(basis.getPoint(i)), i);
+   
+   return basisPt;
+}
+
+Point Point::xyzBasis (const Matrix3& basis) const
+{
+   Point xyzPt;
+
+   for (int i=0; i<3; i++)
+      xyzPt += basis.getPoint(i)*coord(i);
+   
+   return xyzPt;
+}
