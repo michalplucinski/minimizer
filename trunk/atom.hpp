@@ -9,7 +9,7 @@ class Atom
    private:
       int atomIndex;
       Point pos; //position relative to posBasis
-      static const int sNeighbourCount=4;
+      static const int sNeighbourCount=6;
       Atom *neighbours[sNeighbourCount];
       int neighbourCount;
       void copy(const Atom&);
@@ -21,8 +21,8 @@ class Atom
       Atom(const Point&, int, const Matrix3&);
       Atom(const Atom&);
 
-//      void setPos(double, char);
       void setPos(const Point&);
+      void setRelPos(const Point& other) {pos = other;}
       void setNeighbour(Atom*);
       void delNeighbour(int);
       void clearNeighbours();

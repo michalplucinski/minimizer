@@ -29,7 +29,7 @@ double my_f (const gsl_vector *v, void *params)
       if (a == b)
          continue;
       
-      fxn += .5*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2);
+      fxn += .25*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2);
    }
    return fxn;
 }
@@ -108,7 +108,7 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
    
    /* Starting point, x = (5,7) */
    x = gsl_vector_alloc (p.var());
-   
+  
    for (i=0; i<p.var(); i+=3)
    {
       gsl_vector_set (x, i, pos[i/3].x() );

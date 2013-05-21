@@ -37,12 +37,12 @@ int main (int argc, char* argv[])
    Point cellMultiply(cellFactor);
    
    readAtoms(atomList, inputFile, unitCellParam);
-//   param = unitCellParam;
+   param = unitCellParam;
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
    connectAtoms(atomList, exBond, param);
    //defines parameters for optimization
-   double k;
-   k = 5.229e-4; 
+   double k = 1;
+ //  k = 5.229e-4; 
    param.k(k);
    unitCellParam.k(k);
    double potential;
@@ -58,7 +58,7 @@ int main (int argc, char* argv[])
    potential = energy(atomList, param, stepSize, tolerance);
    cout << potential << endl;
 */   
-   for (double i=.96; i<1.05; i+=.02)
+   for (double i=.9996; i<1.0005; i+=.0001)
    {
       strainParam = param;
       strainFactor.setAll(i);

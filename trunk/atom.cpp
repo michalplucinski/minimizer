@@ -82,22 +82,6 @@ void Atom::clearNeighbours()
    neighbourCount = 0;
 }
 
-/*void Atom::setPos(double val, char dimen)
-{
-   switch (dimen)
-   {
-      case 'x':
-         pos.x(val);
-         break;
-      case 'y':
-         pos.y(val);
-         break;
-      case 'z':
-         pos.z(val);
-         break;
-   }     
-}*/
-
 void Atom::setPos(const Point & coord)
 {
    pos = coord.changeBasis(posBasis);
