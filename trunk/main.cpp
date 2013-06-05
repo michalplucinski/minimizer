@@ -24,6 +24,7 @@ int mod(int, int);
 double degRad(double);
 double pi();
 
+void changeAtomParam(vector<Atom>&, Parameters&);
 double energy (vector<Atom>&, Parameters&, double, double);
 
 int main (int argc, char* argv[])
@@ -35,7 +36,7 @@ int main (int argc, char* argv[])
    int exBond = atoi(argv[2]);
    int cellFactor = atoi(argv[3]);
    Point cellMultiply(cellFactor);
-   
+  
    readAtoms(atomList, inputFile, unitCellParam);
    param = unitCellParam;
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
@@ -58,7 +59,7 @@ int main (int argc, char* argv[])
    potential = energy(atomList, param, stepSize, tolerance);
    cout << potential << endl;
 */   
-   for (double i=.9996; i<1.0005; i+=.0001)
+/*   for (double i=.9996; i<1.0005; i+=.0002)
    {
       strainParam = param;
       strainFactor.setAll(i);
@@ -66,7 +67,13 @@ int main (int argc, char* argv[])
       potential = energy(atomList, strainParam, stepSize, tolerance);
       cout << strainParam.volume() << ' ' << potential << endl;
    }
-   
+  */ 
+//      potential = energy(atomList, param, stepSize, tolerance);
+      strainParam = param;
+      strainFactor.setAll(.9996);
+      strainParam.strain(strainFactor, shearFactor);
+     debug(atomList[5].getPos().distance())
+      potential = energy(atomList, strainParam, stepSize, tolerance);
    outputAtoms(atomList, inputFile, strainParam, potential);
 
    return 0;
@@ -82,7 +89,8 @@ double energy (vector<Atom>& atomList, Parameters& param, double stepSize, doubl
       positions[i] = atomList[i].getPos();
 
    param.genBondList(atomList);
-   
+   changeAtomParam(atomList, param);
+
    potential = optimizer(positions, param, stepSize, tolerance);
    for (i=0; i<param.pnt(); i++)
    {
@@ -114,7 +122,6 @@ void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
    double x,y,z;
    int i,n;
    Point tmp;
-   Atom newAtom;
 
    file >> buffer >> buffer;
    for (i=0;i<3;i++)
@@ -125,6 +132,7 @@ void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
       tmp.z(z);
       p.setDim(tmp, i);
    }
+   Atom newAtom(&p);
    
    file >> buffer >> n >> buffer;
    p.pnt(n);
@@ -146,7 +154,7 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
 {
    int i,j,k,m;
    unsigned int index;
-   Atom newAtom;
+   Atom newAtom(&np);
    Matrix3 factor;
    factor.setDiag(n);
 
@@ -170,7 +178,8 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
                pos += (op.dim(2)*k);
                if (index < atoms.size())
                {
-                  atoms[index].setPos( pos );
+                  atoms[index].setParam(&np);
+                  atoms[index].setPos(pos);
                   atoms[index].setIndex(index);
                   atoms[index].clearNeighbours();
                }
@@ -240,4 +249,13 @@ void outputAtoms(vector<Atom> & atoms, string fileName, Parameters & p, double p
 
    cout  << potential << "\n";
    file.close();
+}
+
+void changeAtomParam(vector<Atom> & atoms, Parameters & p)
+{
+   int size = atoms.size();
+   for (int i=0; i<size; i++)
+   {
+      atoms[i].setParam(&p);
+   }
 }

@@ -4,20 +4,30 @@
 #include <ctime>
 #include <matrix3.hpp>
 #include <minexcept.hpp>
+#include <iostream>
+#define debug(x) std::cout << __LINE__ << ' ' << x << std::endl; std::cout.flush();
 
-Atom::Atom ()
+/*Atom::Atom ()
 {
+   cellInfo = new Parameters;
+   
+   Matrix3 posBasis;
    posBasis.setDiag(Point(1,1,1));
+   cellInfo->setDim(posBasis);
+
    for (int i=0; i<sNeighbourCount; i++)
    {
       neighbours[i] = this;
    }
    neighbourCount = 0;
-}
 
-Atom::Atom (const Matrix3& basis)
+   externalParam = false;
+}*/
+
+Atom::Atom (Parameters *info)
 {
-   posBasis = basis;
+   pos.setAll(0);
+   cellInfo = info;
    for (int i=0; i<sNeighbourCount; i++)
    {
       neighbours[i] = this;
@@ -25,7 +35,7 @@ Atom::Atom (const Matrix3& basis)
    neighbourCount = 0;
 }
 
-Atom::Atom (const Point & target, int index)
+/*Atom::Atom (const Point & target, int index)
 {
    posBasis.setDiag(Point(1,1,1));
    setPos(target);
@@ -35,11 +45,11 @@ Atom::Atom (const Point & target, int index)
       neighbours[i] = this;
    }
    neighbourCount = 0;
-}
+}*/
 
-Atom::Atom(const Point& target, int index, const Matrix3& basis)
+Atom::Atom(const Point& target, int index, Parameters* info)
 {
-   posBasis = basis;
+   cellInfo = info;
    setPos(target);
    atomIndex = index;
    for (int i=0; i<sNeighbourCount; i++)
@@ -50,8 +60,8 @@ Atom::Atom(const Point& target, int index, const Matrix3& basis)
 }
       
 void Atom::copy (const Atom& target)
-{
-   posBasis = target.posBasis;
+{  
+   cellInfo = target.cellInfo;
    for (int i=0; i<sNeighbourCount; i++)
    {
       if (target.neighbours[i] == &target) 
@@ -73,6 +83,12 @@ Atom::Atom (const Atom & target)
    copy (target);
 }
 
+/*Atom::~Atom ()
+{
+   if (!externalParam)
+      delete cellInfo;
+}*/
+
 void Atom::clearNeighbours()
 {
    for (int i=0; i<sNeighbourCount; i++)
@@ -84,7 +100,8 @@ void Atom::clearNeighbours()
 
 void Atom::setPos(const Point & coord)
 {
-   pos = coord.changeBasis(posBasis);
+//   std::cout << coord.x() << ' ' << coord.changeBasis(cellInfo->dim()).x() << std::endl;
+   pos = coord.changeBasis(cellInfo->dim());
 }
 
 void Atom::setNeighbour(Atom * pTarget)
@@ -103,6 +120,11 @@ void Atom::setNeighbour(Atom * pTarget)
          break;
       }
    }
+}
+
+void Atom::setParam (Parameters *info)
+{
+   cellInfo = info;
 }
 
 Atom * Atom::getNeighbour(int num) const
@@ -135,7 +157,7 @@ void Atom::delRandNeighbour()
 
 double Atom::getPos(char dimen) const
 {
-   Point posXYZ = pos.xyzBasis(posBasis);
+   Point posXYZ = pos.xyzBasis(cellInfo->dim());
    switch (dimen)
    {
       case 'x':
@@ -149,9 +171,15 @@ double Atom::getPos(char dimen) const
    }
 }
 
+double Atom::getPos(int i) const
+{
+   Point posXYZ = pos.xyzBasis(cellInfo->dim());
+   return posXYZ.coord(i);
+}
+
 Point Atom::getPos() const
 {
-   return pos.xyzBasis(posBasis);
+   return pos.xyzBasis(cellInfo->dim());
 }
 
 void Atom::setIndex(int num)

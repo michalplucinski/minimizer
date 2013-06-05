@@ -8,6 +8,8 @@
 #include <atom.hpp>
 #include <cmath>
 
+class Atom;
+
 //All info needed about the function
 class Parameters
 {
@@ -41,7 +43,7 @@ class Parameters
       void dist (double n) {mdist = n;}
       void setDim (Point pt, int n) {mdim.setPoint(pt,n); mlen.setCoord(pt.distance(), n);}
       void setDim (const Matrix3&);
-      void genBondList (std::vector<Atom> & atoms);
+      void genBondList (std::vector<Atom>&);
 
       Parameters& operator= (const Parameters& other) {copy(other); return *this;}
       void strain (const Point&);

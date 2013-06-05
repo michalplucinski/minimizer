@@ -3,6 +3,7 @@
 #include <minexcept.hpp>
 #include <iostream>
 #include <matrix3.hpp>
+#define debug(x) std::cout << __LINE__ << ' ' << x << std::endl; std::cout.flush();
 
 Point::Point (double x, double y, double z) : Matrix(3,1)
 {
@@ -81,7 +82,9 @@ Point Point::changeBasis (const Matrix3& basis) const
    Point basisPt;
 
    for (int i=0; i<3; i++)
-      basisPt.setCoord( scalarProj(basis.getPoint(i)), i);
+   {
+      basisPt.setCoord( scalarProj(basis.getPoint(i))/basis.getPoint(i).distance(), i);
+   }
    
    return basisPt;
 }

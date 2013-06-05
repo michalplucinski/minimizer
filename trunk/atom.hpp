@@ -3,23 +3,27 @@
 
 #include <point.hpp>
 #include <matrix3.hpp>
+#include <fxn.hpp>
+
+class Parameters;
 
 class Atom
 {
    private:
       int atomIndex;
-      Point pos; //position relative to posBasis
+      Point pos; //position relative to cellInfo->dim()
       static const int sNeighbourCount=6;
       Atom *neighbours[sNeighbourCount];
       int neighbourCount;
       void copy(const Atom&);
-      Matrix3 posBasis; //vectors defining cell Atom is found in
+      Parameters *cellInfo; //vectors defining cell Atom is found in
    public:
-      Atom();
-      Atom(const Matrix3&);
-      Atom(const Point&, int);
-      Atom(const Point&, int, const Matrix3&);
+//      Atom();
+      Atom(Parameters*);
+//      Atom(const Point&, int);
+      Atom(const Point&, int, Parameters*);
       Atom(const Atom&);
+ //     ~Atom();
 
       void setPos(const Point&);
       void setRelPos(const Point& other) {pos = other;}
@@ -28,10 +32,12 @@ class Atom
       void clearNeighbours();
       void delRandNeighbour();
       void setIndex(int);
+      void setParam(Parameters*);
 
       double getPos(char) const;
-      double getPos(int i) const {return pos.coord(i);}
+      double getPos(int) const;
       Point getPos() const;
+      double getRelPos(int i) const {return pos.coord(i);}
       const Point& getRelPos() const {return pos;}
       Atom* getNeighbour(int) const;
       int getIndex() const;

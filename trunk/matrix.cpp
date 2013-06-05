@@ -58,6 +58,7 @@ Matrix::Matrix (const double other[], int h, int w)
 
 Matrix::Matrix (double * other, int h, int w)
 {
+   //std::cout << h << ' ' << w << std::endl;
    width = w;
    height = h;
    mElements = new double [width*height];
@@ -80,6 +81,7 @@ double Matrix::get (int i, int j) const
    if (i >= height || j >= width)
    {
       std::cout << i << ' ' << j << std::endl;
+      std::cout << height << ' ' << width << std::endl;
       throw BadIndex();
    }
 

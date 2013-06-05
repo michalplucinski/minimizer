@@ -29,6 +29,7 @@ double my_f (const gsl_vector *v, void *params)
       if (a == b)
          continue;
       
+//   debug(.25*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2));
       fxn += .25*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2);
    }
    return fxn;
@@ -154,7 +155,8 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
 
    gsl_multimin_fdfminimizer_free (s);
    gsl_vector_free (x);
-   
+  
+//  debug((s->f)/16); 
    return s->f;
 }
 
