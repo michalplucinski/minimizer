@@ -47,8 +47,8 @@ int main (int argc, char* argv[])
    param.k(k);
    unitCellParam.k(k);
    double potential;
-   double stepSize = .001;
-   double tolerance = 1e-6;
+   double stepSize = .01;
+   double tolerance = 1e-10;
    Point strainFactor(1,1,1);
    Point shearFactor(0,0,0);
 
@@ -59,7 +59,7 @@ int main (int argc, char* argv[])
    potential = energy(atomList, param, stepSize, tolerance);
    cout << potential << endl;
 */   
-/*   for (double i=.9996; i<1.0005; i+=.0002)
+   for (double i=.9996; i<1.0005; i+=.0002)
    {
       strainParam = param;
       strainFactor.setAll(i);
@@ -67,13 +67,12 @@ int main (int argc, char* argv[])
       potential = energy(atomList, strainParam, stepSize, tolerance);
       cout << strainParam.volume() << ' ' << potential << endl;
    }
-  */ 
-//      potential = energy(atomList, param, stepSize, tolerance);
-      strainParam = param;
-      strainFactor.setAll(.9996);
+   
+/*      strainParam = param;
+      strainFactor.setAll(.996);
       strainParam.strain(strainFactor, shearFactor);
-     debug(atomList[5].getPos().distance())
       potential = energy(atomList, strainParam, stepSize, tolerance);
+      */
    outputAtoms(atomList, inputFile, strainParam, potential);
 
    return 0;
@@ -84,13 +83,14 @@ double energy (vector<Atom>& atomList, Parameters& param, double stepSize, doubl
    double potential;
    int i;
 
+   changeAtomParam(atomList, param);
    vector<Point> positions(param.pnt());
    for (i=0; i<param.pnt(); i++)
       positions[i] = atomList[i].getPos();
 
    param.genBondList(atomList);
-   changeAtomParam(atomList, param);
 
+//     debug(atomList[5].getPos().distance())
    potential = optimizer(positions, param, stepSize, tolerance);
    for (i=0; i<param.pnt(); i++)
    {

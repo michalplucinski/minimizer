@@ -18,12 +18,9 @@ class Atom
       void copy(const Atom&);
       Parameters *cellInfo; //vectors defining cell Atom is found in
    public:
-//      Atom();
       Atom(Parameters*);
-//      Atom(const Point&, int);
       Atom(const Point&, int, Parameters*);
       Atom(const Atom&);
- //     ~Atom();
 
       void setPos(const Point&);
       void setRelPos(const Point& other) {pos = other;}
