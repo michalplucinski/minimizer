@@ -4,6 +4,7 @@
 #include <matrix.hpp>
 #include <cstring>
 #include <point.hpp>
+#include <cmath>
 
 class Matrix3: public Matrix
 {
@@ -26,6 +27,9 @@ class Matrix3: public Matrix
       Point getPoint (int n) const {Point column (getCol(n)); return column;}
       Point operator[] (size_t n) {return getPoint(n);}
       double tripleProduct() const;
+      double volume() const {return fabs(tripleProduct());}
+      double getAngle(int, int) const;
+      double getAngle(int) const;
       
       void setPoint (const Point&, int);
       void setDiag (const Point&);

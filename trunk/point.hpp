@@ -40,6 +40,7 @@ class Point: public Matrix
       Point rotate (double, const Point&) const;
       Point changeBasis (const Matrix3&) const;
       Point xyzBasis (const Matrix3&) const;
+      double angle (const Point&) const;
 };
 
 #endif

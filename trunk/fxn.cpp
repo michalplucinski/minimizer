@@ -29,7 +29,6 @@ double my_f (const gsl_vector *v, void *params)
       if (a == b)
          continue;
       
-//   debug(.25*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2));
       fxn += .25*p.k()*pow( ((p.getRealDiff(a,b)).distance() - p.dist()) ,2);
    }
    return fxn;
@@ -156,7 +155,6 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
    gsl_multimin_fdfminimizer_free (s);
    gsl_vector_free (x);
   
-//  debug((s->f)/16); 
    return s->f;
 }
 
@@ -164,26 +162,26 @@ double optimizer(vector<Point> & pos, Parameters & p, double stepSize, double to
 //Otherwise, simply returns the difference between them
 Point Parameters::getRealDiff (Point & a, Point & b)
 {
-   Point c;
-   c = (a-b);
+   Point c = (a-b);
    double sign;
-   double xDel = c.scalarProj(dim(0));
-   double yDel = c.scalarProj(dim(1));
-   double zDel = c.scalarProj(dim(2));
+   Point del = c.changeBasis(dim());
+//   double xDel = c.scalarProj(dim(0));
+//   double yDel = c.scalarProj(dim(1));
+//   double zDel = c.scalarProj(dim(2));
 
-   if (xDel < -mlen.x()/2 || xDel > mlen.x()/2)
+   if (del.x() < -1/2 || del.x() > 1/2)
    {
-      sign = xDel < 0 ? 1 : -1;
+      sign = c.x() < 0 ? 1 : -1;
       c += dim(0)*sign;
    }
-   if (yDel < -mlen.y()/2 || yDel > mlen.y()/2)
+   if (del.y() < -1/2 || del.y() > 1/2)
    {
-      sign = yDel < 0 ? 1 : -1;
+      sign = c.y() < 0 ? 1 : -1;
       c += dim(1)*sign;
    }
-   if (zDel < -mlen.z()/2 || zDel > mlen.z()/2)
+   if (del.z() < -1/2 || del.z() > 1/2)
    {
-      sign = zDel < 0 ? 1 : -1;
+      sign = c.z() < 0 ? 1 : -1;
       c += dim(2)*sign;
    }
 
@@ -193,23 +191,24 @@ Point Parameters::getRealDiff (Point & a, Point & b)
 Point Parameters::checkPeriodBound (Point & c)
 {
    double sign;
-   double xDel = c.scalarProj(dim(0));
-   double yDel = c.scalarProj(dim(1));
-   double zDel = c.scalarProj(dim(2));
+   Point fract = c.changeBasis(dim());
+//   double xDel = c.scalarProj(dim(0));
+//   double yDel = c.scalarProj(dim(1));
+//   double zDel = c.scalarProj(dim(2));
 
-   if (xDel < 0 || xDel >= mlen.x())
+   if (fract.x() < 0 || fract.x() >= 1)
    {
-      sign = xDel < 0 ? 1 : -1;
+      sign = fract.x() < 0 ? 1 : -1;
       c = (c+(dim(0)*sign));
    }
-   if (yDel < 0 || yDel >= mlen.y())
+   if (fract.y() < 0 || fract.y() >= 1)
    {
-      sign = yDel < 0 ? 1 : -1;
+      sign = fract.y() < 0 ? 1 : -1;
       c = (c+(dim(1)*sign));
    }
-   if (zDel < 0 || zDel >= mlen.z())
+   if (fract.z() < 0 || fract.z() >= 1)
    {
-      sign = zDel < 0 ? 1 : -1;
+      sign = fract.z() < 0 ? 1 : -1;
       c = (c+(dim(2)*sign));
    }
    return c;

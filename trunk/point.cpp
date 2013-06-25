@@ -80,11 +80,23 @@ Point Point::rotate (double theta, const Point & axis) const
 Point Point::changeBasis (const Matrix3& basis) const
 {
    Point basisPt;
-
-   for (int i=0; i<3; i++)
-   {
-      basisPt.setCoord( scalarProj(basis.getPoint(i))/basis.getPoint(i).distance(), i);
-   }
+   double a = basis.getPoint(0).distance();
+   double b = basis.getPoint(1).distance();
+   double c = basis.getPoint(2).distance();
+   double al = basis.getAngle(0);
+   double be = basis.getAngle(1);
+   double ga = basis.getAngle(2);
+   double v = sqrt( 1 -pow(cos(al),2) -pow(cos(be),2) -pow(cos(ga),2) + 2*cos(al)*cos(be)*cos(ga) );
+   
+   Matrix3 changeOfBasis;
+   changeOfBasis.set(0,0, 1/a );
+   changeOfBasis.set(0,1, -cos(ga)/a/sin(ga) );
+   changeOfBasis.set(0,2, (cos(al) *cos(ga) -cos(be)) /a /v /sin(ga) );
+   changeOfBasis.set(1,1, 1 /b /sin(ga) );
+   changeOfBasis.set(1,2, (cos(be) *cos(ga) -cos(al)) /b /v /sin(ga) );
+   changeOfBasis.set(2,2, sin(ga)/c/v );
+   
+   basisPt = changeOfBasis*(*this);
    
    return basisPt;
 }
@@ -92,9 +104,29 @@ Point Point::changeBasis (const Matrix3& basis) const
 Point Point::xyzBasis (const Matrix3& basis) const
 {
    Point xyzPt;
-
-   for (int i=0; i<3; i++)
-      xyzPt += basis.getPoint(i)*coord(i);
    
+   double a = basis.getPoint(0).distance();
+   double b = basis.getPoint(1).distance();
+   double c = basis.getPoint(2).distance();
+   double al = basis.getAngle(0);
+   double be = basis.getAngle(1);
+   double ga = basis.getAngle(2);
+   double v = sqrt( 1 -pow(cos(al),2) -pow(cos(be),2) -pow(cos(ga),2) + 2*cos(al)*cos(be)*cos(ga) );
+
+   Matrix3 changeOfBasis;
+   changeOfBasis.set(0,0, a );
+   changeOfBasis.set(0,1, b *cos(ga) );
+   changeOfBasis.set(0,2, c *cos(be) );
+   changeOfBasis.set(1,1, b *sin(ga) );
+   changeOfBasis.set(1,2, c *(cos(al) -cos(be) *cos(ga)) /sin(ga) );
+   changeOfBasis.set(2,2, c *v /sin(ga));
+   
+   xyzPt = changeOfBasis*(*this);
+
    return xyzPt;
+}
+
+double Point::angle (const Point& other) const
+{
+   return acos( dot(other)/distance()/other.distance() );
 }

@@ -41,3 +41,23 @@ double Matrix3::tripleProduct() const
 {
    return getPoint(0).dot( getPoint(1).cross(getPoint(2)) );
 }
+
+double Matrix3::getAngle(int a, int b) const
+{
+   return getPoint(a).angle(getPoint(b));
+}
+
+double Matrix3::getAngle(int i) const
+{
+   switch (i)
+   {
+      case 0:
+         return getAngle(1,2);
+      case 1:
+         return getAngle(2,0);
+      case 2:
+         return getAngle(0,1);
+      default:
+         throw BadIndex();
+   }
+}

@@ -11,7 +11,10 @@
 #include <point.hpp>
 #include <fxn.hpp>
 
+#define PI 3.141592653589793
+
 #define debug(x) cout << __LINE__ << ' ' << x << endl; cout.flush();
+
 
 using namespace std;
 
@@ -33,7 +36,7 @@ int main (int argc, char* argv[])
    vector<Atom> atomList;
    Parameters param, unitCellParam, strainParam;
    
-   int exBond = atoi(argv[2]);
+   double exBond = atoi(argv[2]);
    int cellFactor = atoi(argv[3]);
    Point cellMultiply(cellFactor);
   
@@ -41,6 +44,7 @@ int main (int argc, char* argv[])
    param = unitCellParam;
    multiplyCell(atomList, cellMultiply, unitCellParam, param);
    connectAtoms(atomList, exBond, param);
+   
    //defines parameters for optimization
    double k = 1;
  //  k = 5.229e-4; 
@@ -48,7 +52,7 @@ int main (int argc, char* argv[])
    unitCellParam.k(k);
    double potential;
    double stepSize = .01;
-   double tolerance = 1e-10;
+   double tolerance = 1e-12;
    Point strainFactor(1,1,1);
    Point shearFactor(0,0,0);
 
@@ -59,20 +63,20 @@ int main (int argc, char* argv[])
    potential = energy(atomList, param, stepSize, tolerance);
    cout << potential << endl;
 */   
-   for (double i=.9996; i<1.0005; i+=.0002)
+/*   for (double i=.996; i<1.005; i+=.002)
    {
       strainParam = param;
       strainFactor.setAll(i);
       strainParam.strain(strainFactor, shearFactor);
       potential = energy(atomList, strainParam, stepSize, tolerance);
       cout << strainParam.volume() << ' ' << potential << endl;
-   }
+   }*/
    
-/*      strainParam = param;
-      strainFactor.setAll(.996);
+      strainParam = param;
+//      strainFactor.setAll(.996);
       strainParam.strain(strainFactor, shearFactor);
       potential = energy(atomList, strainParam, stepSize, tolerance);
-      */
+      
    outputAtoms(atomList, inputFile, strainParam, potential);
 
    return 0;
@@ -90,7 +94,6 @@ double energy (vector<Atom>& atomList, Parameters& param, double stepSize, doubl
 
    param.genBondList(atomList);
 
-//     debug(atomList[5].getPos().distance())
    potential = optimizer(positions, param, stepSize, tolerance);
    for (i=0; i<param.pnt(); i++)
    {
@@ -112,7 +115,7 @@ double degRad(double deg)
 
 double pi()
 {
-   return 3.14159265359;
+   return PI;
 }
 
 void readAtoms(vector<Atom> & atoms, string fileName, Parameters & p)
@@ -198,13 +201,14 @@ void multiplyCell(vector<Atom> & atoms, Point & n, Parameters & op, Parameters &
 void connectAtoms(vector<Atom> & atoms, int target, Parameters & p)
 {
    int size = atoms.size();
-   Point a,b;
+   Point a = atoms[0].getPos();
+   Point b = atoms[target].getPos();
    int nBond = 0;
    p.cxn(0);
-   double cellDist;
-   double epsilon = 1e-8;
+   double epsilon = 1e-1;
+   double cellDist = fabs( (p.getRealDiff(a,b)).distance());
 
-   p.dist( fabs( (atoms[0].getPos() - atoms[target].getPos()).distance() ) );
+   p.dist( cellDist );
    
    for (int i=0; i<size; i++)
    {
@@ -216,6 +220,7 @@ void connectAtoms(vector<Atom> & atoms, int target, Parameters & p)
          b = atoms[j].getPos();
          cellDist = fabs( (p.getRealDiff(a,b)).distance());
 
+cout << cellDist << ' ' << atoms[i].getIndex() << ' ' << atoms[j].getIndex() << endl;
          if ( fabs(cellDist - p.dist()) < epsilon)
          {
             atoms[i].setNeighbour(&atoms[j]);
@@ -242,7 +247,7 @@ void outputAtoms(vector<Atom> & atoms, string fileName, Parameters & p, double p
    
    for (i=0;i<p.pnt();i++)
    {
-      file << "6 " << atoms[i].getPos('x') << " " << atoms[i].getPos('y') << " " << atoms[i].getPos('z') 
+      file << "6 " << atoms[i].getPos(0) << " " << atoms[i].getPos(1) << " " << atoms[i].getPos(2) 
       << ' ' << atoms[i].getNeighbourIndex(0) << ' ' <<atoms[i].getNeighbourIndex(1) << ' '
       << atoms[i].getNeighbourIndex(2) << ' ' <<atoms[i].getNeighbourIndex(3) << '\n';
    }

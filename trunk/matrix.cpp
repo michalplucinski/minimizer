@@ -58,7 +58,6 @@ Matrix::Matrix (const double other[], int h, int w)
 
 Matrix::Matrix (double * other, int h, int w)
 {
-   //std::cout << h << ' ' << w << std::endl;
    width = w;
    height = h;
    mElements = new double [width*height];
